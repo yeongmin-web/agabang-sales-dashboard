@@ -378,22 +378,20 @@
     // ── 도넛 크기 동적 계산 ──
     function getDonutLayout() {
       const w = document.getElementById('donutAchieve').offsetWidth;
-      // 좁은 폭(1열)이면 좌우로 넓게, 넓은 폭(2열)이면 컴팩트하게
       if (w > 500) {
         return {
-          off: { radius: ['36%', '52%'], center: ['25%', '45%'] },
-          on:  { radius: ['36%', '52%'], center: ['75%', '45%'] },
+          off: { radius: ['46%', '68%'], center: ['25%', '46%'] },
+          on:  { radius: ['46%', '68%'], center: ['75%', '46%'] },
         };
       } else if (w > 350) {
         return {
-          off: { radius: ['30%', '44%'], center: ['25%', '45%'] },
-          on:  { radius: ['30%', '44%'], center: ['75%', '45%'] },
+          off: { radius: ['40%', '58%'], center: ['25%', '46%'] },
+          on:  { radius: ['40%', '58%'], center: ['75%', '46%'] },
         };
       } else {
-        // 매우 좁으면 세로 배치
         return {
-          off: { radius: ['28%', '40%'], center: ['30%', '30%'] },
-          on:  { radius: ['28%', '40%'], center: ['70%', '30%'] },
+          off: { radius: ['36%', '52%'], center: ['30%', '46%'] },
+          on:  { radius: ['36%', '52%'], center: ['70%', '46%'] },
         };
       }
     }
@@ -501,12 +499,6 @@
           trigger: 'item',
           formatter: p => `<b>${p.name}</b><br/>${p.value}개월`
         },
-        legend: {
-          bottom: 10,
-          textStyle: { color: '#94A3B8', fontSize: 11 },
-          itemWidth: 10, itemHeight: 10,
-          itemGap: 16,
-        },
         series: [
           {
             type: 'pie',
@@ -514,21 +506,21 @@
             center: layout.off.center,
             label: {
               show: true, position: 'center',
-              formatter: 'OFF\n4 / 12',
-              fontSize: 13, fontWeight: '600',
-              color: '#A5B4FC', lineHeight: 18,
+              formatter: 'OFF\n{a|33%}',
+              rich: {
+                a: { fontSize: 22, fontWeight: '700', color: '#A5B4FC', lineHeight: 32 }
+              },
+              fontSize: 11, color: '#64748B', lineHeight: 16,
             },
-            itemStyle: { borderRadius: 6, borderColor: '#151B2B', borderWidth: 2 },
-            emphasis: {
-              itemStyle: { shadowBlur: 16, shadowColor: 'rgba(99,102,241,0.3)' }
-            },
+            itemStyle: { borderColor: '#0B0F19', borderWidth: 3 },
+            emphasis: { scale: false, itemStyle: { opacity: 0.85 } },
             data: [
               { value: 4, name: 'OFF 초과', itemStyle: { color: '#6366F1' } },
-              { value: 8, name: 'OFF 미달', itemStyle: { color: 'rgba(99,102,241,0.15)' } },
+              { value: 8, name: 'OFF 미달', itemStyle: { color: '#1E2540' } },
             ],
-            animationType: 'scale',
-            animationEasing: 'elasticOut',
-            animationDelay: 100,
+            silent: false,
+            animation: true,
+            animationDuration: 800,
           },
           {
             type: 'pie',
@@ -536,21 +528,22 @@
             center: layout.on.center,
             label: {
               show: true, position: 'center',
-              formatter: 'ON\n5 / 12',
-              fontSize: 13, fontWeight: '600',
-              color: '#FCD34D', lineHeight: 18,
+              formatter: 'ON\n{a|42%}',
+              rich: {
+                a: { fontSize: 22, fontWeight: '700', color: '#FCD34D', lineHeight: 32 }
+              },
+              fontSize: 11, color: '#64748B', lineHeight: 16,
             },
-            itemStyle: { borderRadius: 6, borderColor: '#151B2B', borderWidth: 2 },
-            emphasis: {
-              itemStyle: { shadowBlur: 16, shadowColor: 'rgba(245,158,11,0.3)' }
-            },
+            itemStyle: { borderColor: '#0B0F19', borderWidth: 3 },
+            emphasis: { scale: false, itemStyle: { opacity: 0.85 } },
             data: [
               { value: 5, name: 'ON 초과', itemStyle: { color: '#F59E0B' } },
-              { value: 7, name: 'ON 미달', itemStyle: { color: 'rgba(245,158,11,0.15)' } },
+              { value: 7, name: 'ON 미달', itemStyle: { color: '#1E2540' } },
             ],
-            animationType: 'scale',
-            animationEasing: 'elasticOut',
-            animationDelay: 300,
+            silent: false,
+            animation: true,
+            animationDuration: 800,
+            animationDelay: 200,
           }
         ]
       }, true);
