@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>사업부별 사업계획 대비 달성율</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/3.0.1/chartjs-plugin-annotation.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #F8FAFC;
+      display: flex; justify-content: center; align-items: center;
+      min-height: 100vh;
+      font-family: 'Noto Sans KR', -apple-system, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    .card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 36px 40px 28px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.06);
+      width: 920px;
+      max-width: 96vw;
+    }
+    .header { margin-bottom: 28px; }
+    .title {
+      font-size: 22px; font-weight: 700; color: #0F172A;
+      letter-spacing: -0.3px;
+    }
+    .subtitle {
+      font-size: 13px; font-weight: 400; color: #94A3B8;
+      margin-top: 6px; display: flex; gap: 12px; align-items: center;
+    }
+    .tag {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 600;
+    }
+    .tag-green { background: #ECFDF5; color: #059669; }
+    .tag-red { background: #FEF2F2; color: #DC2626; }
+    .chart-area { position: relative; height: 460px; }
+    .legend-custom {
+      display: flex; justify-content: center; gap: 24px;
+      margin-top: 16px; flex-wrap: wrap;
+    }
+    .legend-item {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 12px; font-weight: 500; color: #64748B;
+    }
+    .legend-bar { width: 14px; height: 10px; border-radius: 3px; }
+    .legend-line-dashed {
+      width: 22px; height: 0; border-top: 2px dashed #EF4444;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="header">
+      <div class="title">사업부별 사업계획 대비 달성율</div>
+      <div class="subtitle">
+        <span>사업계획 vs 실적 매출액 &nbsp;|&nbsp; 단위: 백만원</span>
+        <span class="tag tag-green">전사 달성율 101.3%</span>
+      </div>
+    </div>
+    <div class="chart-area"><canvas id="chart"></canvas></div>
+    <div class="legend-custom">
+      <div class="legend-item"><div class="legend-bar" style="background:#CBD5E1"></div>사업계획 매출액</div>
+      <div class="legend-item"><div class="legend-bar" style="background:#6366F1"></div>실적 매출액</div>
+      <div class="legend-item"><div class="legend-bar" style="background:#E2E8F0"></div>사업계획 영업이익</div>
+      <div class="legend-item"><div class="legend-bar" style="background:#10B981"></div>실적 영업이익</div>
+      <div class="legend-item"><div class="legend-line-dashed"></div>100% 기준선</div>
+    </div>
+  </div>
+  <script>
+    const ctx = document.getElementById('chart').getContext('2d');
+    const labels = ['갤러리', '에뜨와', '디즈니', '온라인', '임대', '화장품'];
+    const planSales = [15619, 10295, 2953, 3640, 660, 365];
+    const actualSales = [14456, 12415, 2504, 1567, 622, 128];
+    const planProfit = [1579, 1351, -132, 206, 412, 75];
+    const actualProfit = [1282, 1224, 84, -212, 446, 47];
+    const rates = ['92.6%', '120.6%', '84.8%', '43.1%', '94.2%', '35.1%'];
+    const diffs = ['-1,162', '+2,119', '-449', '-2,073', '-38', '-237'];
+
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [
+          {
+            label: '사업계획 매출액',
+            data: planSales,
+            backgroundColor: '#CBD5E1',
+            hoverBackgroundColor: '#94A3B8',
+            borderRadius: 6,
+            barPercentage: 0.7,
+            categoryPercentage: 0.62,
+            order: 2,
+            yAxisID: 'y'
+          },
+          {
+            label: '실적 매출액',
+            data: actualSales,
+            backgroundColor: '#6366F1',
+            hoverBackgroundColor: '#4F46E5',
+            borderRadius: 6,
+            barPercentage: 0.7,
+            categoryPercentage: 0.62,
+            order: 2,
+            yAxisID: 'y'
+          },
+          {
+            label: '사업계획 영업이익',
+            type: 'line',
+            data: planProfit,
+            borderColor: '#94A3B8',
+            borderWidth: 2,
+            borderDash: [6, 3],
+            pointRadius: 4,
+            pointHoverRadius: 7,
+            pointBackgroundColor: '#94A3B8',
+            pointBorderColor: '#fff',
+            pointBorderWidth: 2,
+            fill: false,
+            tension: 0.35,
+            order: 1,
+            yAxisID: 'y1'
+          },
+          {
+            label: '실적 영업이익',
+            type: 'line',
+            data: actualProfit,
+            borderColor: '#10B981',
+            borderWidth: 3,
+            pointRadius: 6,
+            pointHoverRadius: 9,
+            pointBackgroundColor: '#10B981',
+            pointBorderColor: '#fff',
+            pointBorderWidth: 2.5,
+            fill: false,
+            tension: 0.35,
+            order: 1,
+            yAxisID: 'y1'
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: { duration: 900, easing: 'easeOutQuart' },
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { display: false },
+          annotation: {
+            annotations: {}
+          },
+          tooltip: {
+            backgroundColor: 'rgba(15,23,42,0.92)',
+            titleFont: { family: "'Noto Sans KR'", size: 13, weight: '600' },
+            bodyFont: { family: "'Noto Sans KR'", size: 12 },
+            footerFont: { family: "'Noto Sans KR'", size: 11, weight: '600' },
+            padding: { top: 12, bottom: 12, left: 16, right: 16 },
+            cornerRadius: 10,
+            boxPadding: 6,
+            usePointStyle: true,
+            callbacks: {
+              title: function(items) {
+                const idx = items[0].dataIndex;
+                return items[0].label + ' 사업부';
+              },
+              label: function(ctx) {
+                const v = ctx.parsed.y ?? ctx.parsed;
+                return ` ${ctx.dataset.label}: ${v.toLocaleString()} 백만원`;
+              },
+              footer: function(items) {
+                const idx = items[0].dataIndex;
+                return '달성율: ' + rates[idx] + '  |  증감: ' + diffs[idx];
+              }
+            }
+          }
+        },
+        scales: {
+          y: {
+            position: 'left',
+            title: { display: true, text: '매출액 (백만원)', font: { family: "'Noto Sans KR'", size: 11, weight: '500' }, color: '#94A3B8', padding: { bottom: 8 } },
+            beginAtZero: true,
+            grid: { color: '#F1F5F9', lineWidth: 1 },
+            border: { display: false },
+            ticks: {
+              font: { family: "'Noto Sans KR'", size: 10 }, color: '#CBD5E1', maxTicksLimit: 6,
+              callback: function(v) { return (v / 1000).toFixed(0) + 'K'; }
+            }
+          },
+          y1: {
+            position: 'right',
+            title: { display: true, text: '영업이익 (백만원)', font: { family: "'Noto Sans KR'", size: 11, weight: '500' }, color: '#94A3B8', padding: { bottom: 8 } },
+            grid: { display: false },
+            border: { display: false },
+            ticks: {
+              font: { family: "'Noto Sans KR'", size: 10 }, color: '#CBD5E1', maxTicksLimit: 6,
+              callback: function(v) { return v.toLocaleString(); }
+            }
+          },
+          x: {
+            grid: { display: false },
+            border: { display: false },
+            ticks: { font: { family: "'Noto Sans KR'", size: 13, weight: '600' }, color: '#334155', padding: 8 }
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
