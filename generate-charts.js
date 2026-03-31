@@ -629,13 +629,35 @@ function generatePlanChart(divisions) {
 </html>`;
 }
 
+// ── Git 자동 커밋 & 푸시 ──
+function gitAutoPush() {
+  const { execSync } = require('child_process');
+  const opts = { cwd: OUTPUT_DIR, encoding: 'utf8', timeout: 30000 };
+
+  try {
+    execSync('git add yoy-performance.html plan-achievement.html', opts);
+    const staged = execSync('git diff --cached --name-only', opts).trim();
+    if (!staged) {
+      console.log('  → 변경사항 없음, push 생략');
+      return;
+    }
+
+    const now = new Date().toISOString().replace('T', ' ').substring(0, 19);
+    execSync(`git commit -m "차트 데이터 자동 갱신: ${now}"`, opts);
+    execSync('git push', opts);
+    console.log('  ✓ GitHub Pages push 완료');
+  } catch (err) {
+    console.error('  ✗ Git push 실패:', err.message);
+  }
+}
+
 // ── 메인 실행 ──
 async function main() {
   console.log('=== Notion 월별 매출 현황(DB) → 차트 생성 스크립트 ===');
   console.log(`실행 시각: ${new Date().toISOString()}`);
 
   // 1. Notion DB 데이터 조회
-  console.log('\n[1/3] Notion DB 조회 중...');
+  console.log('\n[1/4] Notion DB 조회 중...');
   const filter = {
     property: '연도',
     select: { equals: '2026' }
@@ -643,7 +665,6 @@ async function main() {
   const records2026 = await notionQuery(NOTION_DB_ID, filter);
   console.log(`  → 2026년 데이터 ${records2026.length}건 조회`);
 
-  // 전체 데이터 (전년 비교 포함)
   const allRecords = records2026.map(extractProps);
   console.log(`  → 파싱 완료: ${allRecords.length}건`);
 
@@ -654,7 +675,7 @@ async function main() {
   });
 
   // 2. 사업부별 집계
-  console.log('\n[2/3] 데이터 집계 중...');
+  console.log('\n[2/4] 데이터 집계 중...');
   const divisions = aggregateData(allRecords);
 
   console.log('\n[사업부별 집계 결과] (단위: 백만원)');
@@ -664,7 +685,7 @@ async function main() {
   }
 
   // 3. 차트 HTML 생성
-  console.log('\n[3/3] 차트 HTML 생성 중...');
+  console.log('\n[3/4] 차트 HTML 생성 중...');
 
   const yoyHtml = generateYoYChart(divisions);
   const yoyPath = path.join(OUTPUT_DIR, 'yoy-performance.html');
@@ -676,8 +697,11 @@ async function main() {
   fs.writeFileSync(planPath, planHtml, 'utf8');
   console.log(`  ✓ ${planPath}`);
 
+  // 4. Git 자동 push
+  console.log('\n[4/4] GitHub Pages 배포 중...');
+  gitAutoPush();
+
   console.log('\n=== 완료 ===');
-  console.log('GitHub Pages에 push하려면: cd ' + OUTPUT_DIR + ' && git add -A && git commit -m "Update charts" && git push');
 }
 
 main().catch(err => {
