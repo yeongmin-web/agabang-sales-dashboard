@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>온오프 매출 현황 대시보드</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/3.0.1/chartjs-plugin-annotation.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #F8FAFC;
+      font-family: 'Noto Sans KR', -apple-system, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      padding: 24px 16px;
+    }
+    .dashboard {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+    .dash-header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .dash-title {
+      font-size: 24px; font-weight: 700; color: #0F172A;
+      letter-spacing: -0.5px;
+    }
+    .dash-sub {
+      font-size: 13px; color: #94A3B8; margin-top: 4px;
+    }
+    /* KPI Cards */
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .kpi-card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 18px 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.04);
+    }
+    .kpi-label {
+      font-size: 12px; font-weight: 500; color: #64748B;
+      display: flex; align-items: center; gap: 6px;
+      margin-bottom: 6px;
+    }
+    .kpi-icon { font-size: 16px; }
+    .kpi-value {
+      font-size: 26px; font-weight: 700; color: #0F172A;
+      letter-spacing: -0.5px;
+    }
+    .kpi-unit { font-size: 14px; font-weight: 500; color: #94A3B8; margin-left: 2px; }
+    .kpi-desc {
+      font-size: 11px; color: #94A3B8; margin-top: 4px;
+    }
+    .kpi-badge {
+      display: inline-block;
+      padding: 1px 8px; border-radius: 10px;
+      font-size: 11px; font-weight: 600;
+    }
+    .badge-green { background: #ECFDF5; color: #059669; }
+    .badge-red { background: #FEF2F2; color: #DC2626; }
+    .badge-blue { background: #EFF6FF; color: #2563EB; }
+    /* Chart Cards */
+    .chart-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .chart-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 24px 24px 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.04);
+    }
+    .chart-card.full { grid-column: 1 / -1; }
+    .chart-card-title {
+      font-size: 15px; font-weight: 600; color: #1E293B;
+      margin-bottom: 4px;
+    }
+    .chart-card-sub {
+      font-size: 11px; color: #94A3B8; margin-bottom: 14px;
+    }
+    .chart-wrap { position: relative; height: 260px; }
+    .chart-wrap.tall { height: 320px; }
+    .chart-legend {
+      display: flex; justify-content: center; gap: 16px;
+      margin-top: 10px;
+    }
+    .legend-i {
+      display: flex; align-items: center; gap: 5px;
+      font-size: 11px; font-weight: 500; color: #64748B;
+    }
+    .legend-dot { width: 10px; height: 10px; border-radius: 3px; }
+    .legend-line { width: 18px; height: 3px; border-radius: 2px; }
+    .updated {
+      text-align: center;
+      font-size: 11px; color: #CBD5E1; margin-top: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard">
+    <div class="dash-header">
+      <div class="dash-title">2026년 온오프 매출 현황 대시보드</div>
+      <div class="dash-sub">전 브랜드 통합 | 단위: 억원 | 데이터 출처: Notion 온오프 목표대비 실적 DB</div>
+    </div>
+
+    <!-- KPI Cards -->
+    <div class="kpi-row">
+      <div class="kpi-card">
+        <div class="kpi-label"><span class="kpi-icon">🏬</span> 오프라인 매출</div>
+        <div class="kpi-value">436.5<span class="kpi-unit">억</span></div>
+        <div class="kpi-desc">달성율 <span class="kpi-badge badge-green">104.8%</span></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label"><span class="kpi-icon">💻</span> 온라인 매출</div>
+        <div class="kpi-value">54.9<span class="kpi-unit">억</span></div>
+        <div class="kpi-desc">달성율 <span class="kpi-badge badge-red">59.0%</span></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label"><span class="kpi-icon">💰</span> 총 매출액</div>
+        <div class="kpi-value">491.4<span class="kpi-unit">억</span></div>
+        <div class="kpi-desc">전년 대비 <span class="kpi-badge badge-green">+9.2%</span></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label"><span class="kpi-icon">🎯</span> 목표 초과 달성</div>
+        <div class="kpi-value">OFF 2 / ON 0<span class="kpi-unit">개월</span></div>
+        <div class="kpi-desc">총 3개월 중</div>
+      </div>
+    </div>
+
+    <!-- Charts Row 1: 오프라인 / 온라인 매출 -->
+    <div class="chart-grid">
+      <div class="chart-card">
+        <div class="chart-card-title">월별 오프라인 매출</div>
+        <div class="chart-card-sub">실매출 vs 목표 (억원)</div>
+        <div class="chart-wrap"><canvas id="chartOff"></canvas></div>
+        <div class="chart-legend">
+          <div class="legend-i"><div class="legend-dot" style="background:#6366F1"></div>실매출</div>
+          <div class="legend-i"><div class="legend-line" style="background:#F59E0B"></div>목표</div>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-title">월별 온라인 매출</div>
+        <div class="chart-card-sub">실매출 vs 목표 (억원)</div>
+        <div class="chart-wrap"><canvas id="chartOn"></canvas></div>
+        <div class="chart-legend">
+          <div class="legend-i"><div class="legend-dot" style="background:#8B5CF6"></div>실매출</div>
+          <div class="legend-i"><div class="legend-line" style="background:#F59E0B"></div>목표</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Row 2: 달성율 / 성장율 -->
+    <div class="chart-grid">
+      <div class="chart-card">
+        <div class="chart-card-title">월별 달성율 추이</div>
+        <div class="chart-card-sub">오프라인 vs 온라인 (%)</div>
+        <div class="chart-wrap"><canvas id="chartAchieve"></canvas></div>
+        <div class="chart-legend">
+          <div class="legend-i"><div class="legend-line" style="background:#6366F1"></div>오프라인</div>
+          <div class="legend-i"><div class="legend-line" style="background:#F97316"></div>온라인</div>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-title">전년 대비 성장율 추이</div>
+        <div class="chart-card-sub">오프라인 vs 온라인 (%)</div>
+        <div class="chart-wrap"><canvas id="chartGrowth"></canvas></div>
+        <div class="chart-legend">
+          <div class="legend-i"><div class="legend-line" style="background:#6366F1"></div>오프라인</div>
+          <div class="legend-i"><div class="legend-line" style="background:#F97316"></div>온라인</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chart Row 3: 채널별 비중 파이 + 월별 합계 -->
+    <div class="chart-grid">
+      <div class="chart-card">
+        <div class="chart-card-title">채널별 매출 비중</div>
+        <div class="chart-card-sub">오프라인 vs 온라인</div>
+        <div class="chart-wrap"><canvas id="chartPie"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-title">월별 총 매출 추이</div>
+        <div class="chart-card-sub">오프라인 + 온라인 합계 (억원)</div>
+        <div class="chart-wrap"><canvas id="chartTotal"></canvas></div>
+        <div class="chart-legend">
+          <div class="legend-i"><div class="legend-dot" style="background:#10B981"></div>총 매출</div>
+          <div class="legend-i"><div class="legend-line" style="background:#94A3B8"></div>전년</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="updated">데이터 출처: Notion 온오프 목표대비 실적 DB | 갱신일: 2026-03-31</div>
+  </div>
+
+  <script>
+    const labels = ["1월","2월","3월"];
+    const offSales = [150.3,145.8,140.4];
+    const offTarget = [136.4,137.3,142.9];
+    const onSales = [13.9,15.1,25.9];
+    const onTarget = [28.6,32.4,32];
+    const offAchieve = [110.1,106.2,98.2];
+    const onAchieve = [48.5,46.6,80.9];
+    const offGrowth = [10.8,13.9,-3.3];
+    const onGrowth = [0.3,39.6,58];
+    const totalByMonth = offSales.map((v, i) => +(v + onSales[i]).toFixed(1));
+    const prevByMonth = [149.5,138.9,161.6];
+
+    const fontFamily = "'Noto Sans KR', sans-serif";
+    const gridColor = '#F1F5F9';
+
+    function tooltipCfg() {
+      return {
+        backgroundColor: 'rgba(15,23,42,0.92)',
+        titleFont: { family: fontFamily, size: 12, weight: '600' },
+        bodyFont: { family: fontFamily, size: 11 },
+        padding: 10, cornerRadius: 8, boxPadding: 4
+      };
+    }
+
+    // 오프라인 매출
+    new Chart(document.getElementById('chartOff'), {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [
+          { label: '실매출', data: offSales, backgroundColor: '#6366F1', borderRadius: 5, barPercentage: 0.6, categoryPercentage: 0.7, order: 2 },
+          { label: '목표', data: offTarget, type: 'line', borderColor: '#F59E0B', borderWidth: 2.5, borderDash: [5,3], pointRadius: 3, pointBackgroundColor: '#F59E0B', pointBorderColor: '#fff', pointBorderWidth: 1.5, fill: false, tension: 0.3, order: 1 }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        animation: { duration: 800 },
+        plugins: { legend: { display: false }, tooltip: { ...tooltipCfg(), callbacks: { label: ctx => ' ' + ctx.dataset.label + ': ' + ctx.parsed.y + '억' } } },
+        scales: {
+          x: { grid: { display: false }, border: { display: false }, ticks: { font: { family: fontFamily, size: 10 }, color: '#94A3B8' } },
+          y: { grid: { color: gridColor }, border: { display: false }, ticks: { font: { family: fontFamily, size: 10 }, color: '#CBD5E1', callback: v => v + '억' } }
+        }
+      }
+    });
+
+    // 온라인 매출
+    new Chart(document.getElementById('chartOn'), {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [
+          { label: '실매출', data: onSales, backgroundColor: '#8B5CF6', borderRadius: 5, barPercentage: 0.6, categoryPercentage: 0.7, order: 2 },
+          { label: '목표', data: onTarget, type: 'line', borderColor: '#F59E0B', borderWidth: 2.5, borderDash: [5,3], pointRadius: 3, pointBackgroundColor: '#F59E0B', pointBorderColor: '#fff', pointBorderWidth: 1.5, fill: false, tension: 0.3, order: 1 }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        animation: { duration: 800 },
+        plugins: { legend: { display: false }, tooltip: { ...tooltipCfg(), callbacks: { label: ctx => ' ' + ctx.dataset.label + ': ' + ctx.parsed.y + '억' } } },
+        scales: {
+          x: { grid: { display: false }, border: { display: false }, ticks: { font: { family: fontFamily, size: 10 }, color: '#94A3B8' } },
+          y: { grid: { color: gridColor }, border: { display: false }, ticks: { font: { family: fontFamily, size: 10 }, color: '#CBD5E1', callback: v => v + '억' } }
+        }
+      }
+    });
+
+    // 달성율
+    new Chart(document.getElementById('chartAchieve'), {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [
+          { label: '오프라인', data: offAchieve, borderColor: '#6366F1', borderWidth: 2.5, pointRadius: 4, pointBackgroundColor: '#6366F1', pointBorderColor: '#fff', pointBorderWidth: 2, fill: false, tension: 0.35 },
+          { label: '온라인', data: onAchieve, borderColor: '#F97316', borderWidth: 2.5, pointRadius: 4, pointBackgroundColor: '#F97316', pointBorderColor: '#fff', pointBorderWidth: 2, fill: false, tension: 0.35 }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        animation: { duration: 800 },
+        plugins: {
+          legend: { display: false },
+          tooltip: { ...tooltipCfg(), callbacks: { label: ctx => ' ' + ctx.dataset.label + ': ' + ctx.parsed.y + '%' } },
+          annotation: { annotations: { line100: { type: 'line', yMin: 100, yMax: 100, borderColor: 'rgba(239,68,68,0.4)', borderWidth: 1.5, borderDash: [5,3], label: { display: true, content: '100%', position: 'end', font: { family: fontFamily, size: 10, weight: '600' }, color: '#EF4444', backgroundColor: 'transparent' } } } }
+        },
+        scales: {
+          x: { grid: { display: false }, border: { display: false }, ticks: { font: { family: fontFamily, size: 10 }, color: '#94A3B8' } },
+          y: { grid: { color: gridColor }, border: { display: false }, ticks: { font: { family: fontFamily, size: 10 }, color: '#CBD5E1', callback: v => v + '%' } }
+        }
+      }
+    });
+
+    // 성장율
+    new Chart(document.getElementById('chartGrowth'), {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [
+          { label: '오프라인', data: offGrowth, borderColor: '#6366F1', borderWidth: 2.5, pointRadius: 4, pointBackgroundColor: '#6366F1', pointBorderColor: '#fff', pointBorderWidth: 2, fill: false, tension: 0.35 },
+          { label: '온라인', data: onGrowth, borderColor: '#F97316', borderWidth: 2.5, pointRadius: 4, pointBackgroundColor: '#F97316', pointBorderColor: '#fff', pointBorderWidth: 2, fill: false, tension: 0.35 }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        animation: { duration: 800 },
+        plugins: {
+          legend: { display: false },
+          tooltip: { ...tooltipCfg(), callbacks: { label: ctx => ' ' + ctx.dataset.label + ': ' + (ctx.parsed.y >= 0 ? '+' : '') + ctx.parsed.y + '%' } },
+          annotation: { annotations: { line0: { type: 'line', yMin: 0, yMax: 0, borderColor: 'rgba(107,114,128,0.3)', borderWidth: 1, borderDash: [4,3] } } }
+        },
+        scales: {
+          x: { grid: { display: false }, border: { display: false }, ticks: { font: { family: fontFamily, size: 10 }, color: '#94A3B8' } },
+          y: { grid: { color: gridColor }, border: { display: false }, ticks: { font: { family: fontFamily, size: 10 }, color: '#CBD5E1', callback: v => v + '%' } }
+        }
+      }
+    });
+
+    // 채널별 비중 파이
+    const pieCenterPlugin = {
+      id: 'pieCenter',
+      afterDraw(chart) {
+        const { ctx, chartArea: { width, height, top, left } } = chart;
+        const cx = left + width / 2, cy = top + height / 2;
+        ctx.save();
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.font = "700 22px 'Noto Sans KR', sans-serif";
+        ctx.fillStyle = '#0F172A';
+        ctx.fillText('491.4', cx, cy - 8);
+        ctx.font = "400 12px 'Noto Sans KR', sans-serif";
+        ctx.fillStyle = '#94A3B8';
+        ctx.fillText('억원', cx, cy + 14);
+        ctx.restore();
+      }
+    };
+    new Chart(document.getElementById('chartPie'), {
+      type: 'doughnut',
+      data: {
+        labels: ['오프라인', '온라인'],
+        datasets: [{ data: [436.5, 54.9], backgroundColor: ['#6366F1', '#F97316'], borderColor: '#fff', borderWidth: 3, hoverOffset: 6 }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false, cutout: '65%',
+        plugins: {
+          legend: { position: 'bottom', labels: { font: { family: fontFamily, size: 12, weight: '500' }, color: '#64748B', usePointStyle: true, pointStyle: 'circle', padding: 16,
+            generateLabels: function(chart) {
+              const ds = chart.data.datasets[0];
+              const total = ds.data.reduce((a,b) => a+b, 0);
+              return chart.data.labels.map((l, i) => ({ text: l + ' ' + (ds.data[i] / total * 100).toFixed(1) + '%', fillStyle: ds.backgroundColor[i], strokeStyle: ds.backgroundColor[i], index: i, pointStyle: 'circle' }));
+            }
+          } },
+          tooltip: { ...tooltipCfg(), callbacks: { label: ctx => ' ' + ctx.label + ': ' + ctx.parsed + '억 (' + (ctx.parsed / (491.4) * 100).toFixed(1) + '%)' } }
+        }
+      },
+      plugins: [pieCenterPlugin]
+    });
+
+    // 월별 총 매출
+    new Chart(document.getElementById('chartTotal'), {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [
+          { label: '총 매출', data: totalByMonth, backgroundColor: '#10B981', borderRadius: 5, barPercentage: 0.6, categoryPercentage: 0.7, order: 2 },
+          { label: '전년', data: prevByMonth, type: 'line', borderColor: '#94A3B8', borderWidth: 2, borderDash: [5,3], pointRadius: 3, pointBackgroundColor: '#94A3B8', pointBorderColor: '#fff', pointBorderWidth: 1.5, fill: false, tension: 0.3, order: 1 }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        animation: { duration: 800 },
+        plugins: { legend: { display: false }, tooltip: { ...tooltipCfg(), callbacks: { label: ctx => ' ' + ctx.dataset.label + ': ' + ctx.parsed.y + '억' } } },
+        scales: {
+          x: { grid: { display: false }, border: { display: false }, ticks: { font: { family: fontFamily, size: 10 }, color: '#94A3B8' } },
+          y: { grid: { color: gridColor }, border: { display: false }, ticks: { font: { family: fontFamily, size: 10 }, color: '#CBD5E1', callback: v => v + '억' } }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
