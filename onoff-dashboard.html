@@ -262,10 +262,10 @@
         <div class="chart-wrap"><canvas id="chartBrandStack"></canvas></div>
         <div class="chart-legend">
           <div class="legend-i"><div class="legend-dot" style="background:#3B82F6"></div>아가방 오프</div>
-          <div class="legend-i"><div class="legend-dot" style="background:rgba(59,130,246,0.4)"></div>아가방 온</div>
           <div class="legend-i"><div class="legend-dot" style="background:#10B981"></div>에뜨와 오프</div>
-          <div class="legend-i"><div class="legend-dot" style="background:rgba(16,185,129,0.4)"></div>에뜨와 온</div>
           <div class="legend-i"><div class="legend-dot" style="background:#8B5CF6"></div>디즈니 오프</div>
+          <div class="legend-i"><div class="legend-dot" style="background:rgba(59,130,246,0.4)"></div>아가방 온</div>
+          <div class="legend-i"><div class="legend-dot" style="background:rgba(16,185,129,0.4)"></div>에뜨와 온</div>
           <div class="legend-i"><div class="legend-dot" style="background:rgba(139,92,246,0.4)"></div>디즈니 온</div>
         </div>
       </div>
@@ -506,12 +506,12 @@
       data: {
         labels: brandData['아가방'].labels,
         datasets: [
+          { label: '아가방 온', data: brandData['아가방'].onSales, backgroundColor: 'rgba(59,130,246,0.4)', stack: 'ag', borderRadius: 0, barPercentage: 0.65, categoryPercentage: 0.75 },
           { label: '아가방 오프', data: brandData['아가방'].offSales, backgroundColor: '#3B82F6', stack: 'ag', borderRadius: 4, barPercentage: 0.65, categoryPercentage: 0.75 },
-          { label: '아가방 온', data: brandData['아가방'].onSales, backgroundColor: 'rgba(59,130,246,0.4)', stack: 'ag', borderRadius: 4, barPercentage: 0.65, categoryPercentage: 0.75 },
+          { label: '에뜨와 온', data: brandData['에뜨와'].onSales, backgroundColor: 'rgba(16,185,129,0.4)', stack: 'et', borderRadius: 0, barPercentage: 0.65, categoryPercentage: 0.75 },
           { label: '에뜨와 오프', data: brandData['에뜨와'].offSales, backgroundColor: '#10B981', stack: 'et', borderRadius: 4, barPercentage: 0.65, categoryPercentage: 0.75 },
-          { label: '에뜨와 온', data: brandData['에뜨와'].onSales, backgroundColor: 'rgba(16,185,129,0.4)', stack: 'et', borderRadius: 4, barPercentage: 0.65, categoryPercentage: 0.75 },
-          { label: '디즈니 오프', data: brandData['디즈니'].offSales, backgroundColor: '#8B5CF6', stack: 'dn', borderRadius: 4, barPercentage: 0.65, categoryPercentage: 0.75 },
-          { label: '디즈니 온', data: brandData['디즈니'].onSales, backgroundColor: 'rgba(139,92,246,0.4)', stack: 'dn', borderRadius: 4, barPercentage: 0.65, categoryPercentage: 0.75 }
+          { label: '디즈니 온', data: brandData['디즈니'].onSales, backgroundColor: 'rgba(139,92,246,0.4)', stack: 'dn', borderRadius: 0, barPercentage: 0.65, categoryPercentage: 0.75 },
+          { label: '디즈니 오프', data: brandData['디즈니'].offSales, backgroundColor: '#8B5CF6', stack: 'dn', borderRadius: 4, barPercentage: 0.65, categoryPercentage: 0.75 }
         ]
       },
       options: {
