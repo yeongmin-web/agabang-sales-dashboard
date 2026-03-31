@@ -6,6 +6,7 @@
   <title>온오프 매출 현황 대시보드</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/3.0.1/chartjs-plugin-annotation.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.2.0/chartjs-plugin-datalabels.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -275,6 +276,10 @@
   </div>
 
   <script>
+    Chart.register(ChartDataLabels);
+    // 전역 기본값: datalabels 비활성화 (차트별로 활성화)
+    Chart.defaults.plugins.datalabels = { display: false };
+
     const labels = ["1월","2월","3월"];
     // Brand data
     const brandData = {"아가방":{"labels":["1월","2월","3월"],"sales":[74,86.8,88],"achieve":[87.2,84.3,87.7],"offSales":[66.6,80,75.5],"onSales":[7.4,6.8,12.5]},"에뜨와":{"labels":["1월","2월","3월"],"sales":[77.7,59,63.2],"achieve":[120.5,120.9,109.3],"offSales":[73.1,52.3,52.6],"onSales":[4.6,6.7,10.6]},"디즈니":{"labels":["1월","2월","3월"],"sales":[12.4,15.1,15.1],"achieve":[79,84.2,89.7],"offSales":[10.6,13.6,12.3],"onSales":[1.9,1.6,2.8]}};
@@ -290,6 +295,61 @@
     const prevByMonth = [149.5,138.9,161.6];
 
     const fontFamily = "'Noto Sans KR', sans-serif";
+
+    // 공통 datalabels 스타일 (막대 위 숫자)
+    const barLabelOpts = {
+      display: true,
+      anchor: 'end',
+      align: 'top',
+      offset: 2,
+      font: { family: fontFamily, size: 10, weight: '600' },
+      color: '#475569',
+      formatter: v => v
+    };
+    // 라인 차트용 (포인트 위 숫자)
+    const lineLabelOpts = {
+      display: true,
+      anchor: 'end',
+      align: 'top',
+      offset: 4,
+      font: { family: fontFamily, size: 9, weight: '600' },
+      color: '#64748B',
+      formatter: v => v + '%'
+    };
+    // 스택 차트용 (합계만 최상단에 표시)
+    const stackTotalLabelPlugin = {
+      id: 'stackTotalLabel',
+      afterDatasetsDraw(chart) {
+        const { ctx } = chart;
+        const stacks = {};
+        chart.data.datasets.forEach((ds, di) => {
+          const meta = chart.getDatasetMeta(di);
+          if (meta.hidden) return;
+          meta.data.forEach((bar, idx) => {
+            const stack = ds.stack;
+            if (!stacks[stack]) stacks[stack] = {};
+            if (!stacks[stack][idx]) stacks[stack][idx] = { total: 0, topY: Infinity, topX: 0 };
+            const val = ds.data[idx] || 0;
+            stacks[stack][idx].total += val;
+            if (bar.y < stacks[stack][idx].topY) {
+              stacks[stack][idx].topY = bar.y;
+              stacks[stack][idx].topX = bar.x;
+            }
+          });
+        });
+        ctx.save();
+        ctx.font = "600 10px 'Noto Sans KR', sans-serif";
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'bottom';
+        ctx.fillStyle = '#475569';
+        for (const stack of Object.values(stacks)) {
+          for (const item of Object.values(stack)) {
+            ctx.fillText(item.total.toFixed(1), item.topX, item.topY - 4);
+          }
+        }
+        ctx.restore();
+      }
+    };
     const gridColor = '#F1F5F9';
 
     function tooltipCfg() {
@@ -307,8 +367,8 @@
       data: {
         labels,
         datasets: [
-          { label: '실매출', data: offSales, backgroundColor: '#6366F1', borderRadius: 5, barPercentage: 0.6, categoryPercentage: 0.7, order: 2 },
-          { label: '목표', data: offTarget, type: 'line', borderColor: '#F59E0B', borderWidth: 2.5, borderDash: [5,3], pointRadius: 3, pointBackgroundColor: '#F59E0B', pointBorderColor: '#fff', pointBorderWidth: 1.5, fill: false, tension: 0.3, order: 1 }
+          { label: '실매출', data: offSales, backgroundColor: '#6366F1', borderRadius: 5, barPercentage: 0.6, categoryPercentage: 0.7, order: 2, datalabels: barLabelOpts },
+          { label: '목표', data: offTarget, type: 'line', borderColor: '#F59E0B', borderWidth: 2.5, borderDash: [5,3], pointRadius: 3, pointBackgroundColor: '#F59E0B', pointBorderColor: '#fff', pointBorderWidth: 1.5, fill: false, tension: 0.3, order: 1, datalabels: { display: false } }
         ]
       },
       options: {
@@ -328,8 +388,8 @@
       data: {
         labels,
         datasets: [
-          { label: '실매출', data: onSales, backgroundColor: '#8B5CF6', borderRadius: 5, barPercentage: 0.6, categoryPercentage: 0.7, order: 2 },
-          { label: '목표', data: onTarget, type: 'line', borderColor: '#F59E0B', borderWidth: 2.5, borderDash: [5,3], pointRadius: 3, pointBackgroundColor: '#F59E0B', pointBorderColor: '#fff', pointBorderWidth: 1.5, fill: false, tension: 0.3, order: 1 }
+          { label: '실매출', data: onSales, backgroundColor: '#8B5CF6', borderRadius: 5, barPercentage: 0.6, categoryPercentage: 0.7, order: 2, datalabels: barLabelOpts },
+          { label: '목표', data: onTarget, type: 'line', borderColor: '#F59E0B', borderWidth: 2.5, borderDash: [5,3], pointRadius: 3, pointBackgroundColor: '#F59E0B', pointBorderColor: '#fff', pointBorderWidth: 1.5, fill: false, tension: 0.3, order: 1, datalabels: { display: false } }
         ]
       },
       options: {
@@ -349,8 +409,8 @@
       data: {
         labels,
         datasets: [
-          { label: '오프라인', data: offAchieve, borderColor: '#6366F1', borderWidth: 2.5, pointRadius: 4, pointBackgroundColor: '#6366F1', pointBorderColor: '#fff', pointBorderWidth: 2, fill: false, tension: 0.35 },
-          { label: '온라인', data: onAchieve, borderColor: '#F97316', borderWidth: 2.5, pointRadius: 4, pointBackgroundColor: '#F97316', pointBorderColor: '#fff', pointBorderWidth: 2, fill: false, tension: 0.35 }
+          { label: '오프라인', data: offAchieve, borderColor: '#6366F1', borderWidth: 2.5, pointRadius: 4, pointBackgroundColor: '#6366F1', pointBorderColor: '#fff', pointBorderWidth: 2, fill: false, tension: 0.35, datalabels: { ...lineLabelOpts, color: '#6366F1' } },
+          { label: '온라인', data: onAchieve, borderColor: '#F97316', borderWidth: 2.5, pointRadius: 4, pointBackgroundColor: '#F97316', pointBorderColor: '#fff', pointBorderWidth: 2, fill: false, tension: 0.35, datalabels: { ...lineLabelOpts, color: '#F97316', align: 'bottom', anchor: 'start' } }
         ]
       },
       options: {
@@ -374,8 +434,8 @@
       data: {
         labels,
         datasets: [
-          { label: '오프라인', data: offGrowth, borderColor: '#6366F1', borderWidth: 2.5, pointRadius: 4, pointBackgroundColor: '#6366F1', pointBorderColor: '#fff', pointBorderWidth: 2, fill: false, tension: 0.35 },
-          { label: '온라인', data: onGrowth, borderColor: '#F97316', borderWidth: 2.5, pointRadius: 4, pointBackgroundColor: '#F97316', pointBorderColor: '#fff', pointBorderWidth: 2, fill: false, tension: 0.35 }
+          { label: '오프라인', data: offGrowth, borderColor: '#6366F1', borderWidth: 2.5, pointRadius: 4, pointBackgroundColor: '#6366F1', pointBorderColor: '#fff', pointBorderWidth: 2, fill: false, tension: 0.35, datalabels: { ...lineLabelOpts, color: '#6366F1', formatter: v => (v >= 0 ? '+' : '') + v + '%' } },
+          { label: '온라인', data: onGrowth, borderColor: '#F97316', borderWidth: 2.5, pointRadius: 4, pointBackgroundColor: '#F97316', pointBorderColor: '#fff', pointBorderWidth: 2, fill: false, tension: 0.35, datalabels: { ...lineLabelOpts, color: '#F97316', align: 'bottom', anchor: 'start', formatter: v => (v >= 0 ? '+' : '') + v + '%' } }
         ]
       },
       options: {
@@ -438,8 +498,8 @@
       data: {
         labels,
         datasets: [
-          { label: '총 매출', data: totalByMonth, backgroundColor: '#10B981', borderRadius: 5, barPercentage: 0.6, categoryPercentage: 0.7, order: 2 },
-          { label: '전년', data: prevByMonth, type: 'line', borderColor: '#94A3B8', borderWidth: 2, borderDash: [5,3], pointRadius: 3, pointBackgroundColor: '#94A3B8', pointBorderColor: '#fff', pointBorderWidth: 1.5, fill: false, tension: 0.3, order: 1 }
+          { label: '총 매출', data: totalByMonth, backgroundColor: '#10B981', borderRadius: 5, barPercentage: 0.6, categoryPercentage: 0.7, order: 2, datalabels: barLabelOpts },
+          { label: '전년', data: prevByMonth, type: 'line', borderColor: '#94A3B8', borderWidth: 2, borderDash: [5,3], pointRadius: 3, pointBackgroundColor: '#94A3B8', pointBorderColor: '#fff', pointBorderWidth: 1.5, fill: false, tension: 0.3, order: 1, datalabels: { display: false } }
         ]
       },
       options: {
@@ -458,9 +518,9 @@
       data: {
         labels: brandData['아가방'].labels,
         datasets: [
-          { label: '아가방', data: brandData['아가방'].sales, backgroundColor: '#3B82F6', borderRadius: 5, barPercentage: 0.7, categoryPercentage: 0.75 },
-          { label: '에뜨와', data: brandData['에뜨와'].sales, backgroundColor: '#10B981', borderRadius: 5, barPercentage: 0.7, categoryPercentage: 0.75 },
-          { label: '디즈니', data: brandData['디즈니'].sales, backgroundColor: '#8B5CF6', borderRadius: 5, barPercentage: 0.7, categoryPercentage: 0.75 }
+          { label: '아가방', data: brandData['아가방'].sales, backgroundColor: '#3B82F6', borderRadius: 5, barPercentage: 0.7, categoryPercentage: 0.75, datalabels: { ...barLabelOpts, color: '#3B82F6' } },
+          { label: '에뜨와', data: brandData['에뜨와'].sales, backgroundColor: '#10B981', borderRadius: 5, barPercentage: 0.7, categoryPercentage: 0.75, datalabels: { ...barLabelOpts, color: '#059669' } },
+          { label: '디즈니', data: brandData['디즈니'].sales, backgroundColor: '#8B5CF6', borderRadius: 5, barPercentage: 0.7, categoryPercentage: 0.75, datalabels: { ...barLabelOpts, color: '#7C3AED' } }
         ]
       },
       options: {
@@ -480,9 +540,9 @@
       data: {
         labels: brandData['아가방'].labels,
         datasets: [
-          { label: '아가방', data: brandData['아가방'].achieve, borderColor: '#3B82F6', borderWidth: 2.5, pointRadius: 5, pointBackgroundColor: '#3B82F6', pointBorderColor: '#fff', pointBorderWidth: 2, fill: false, tension: 0.35 },
-          { label: '에뜨와', data: brandData['에뜨와'].achieve, borderColor: '#10B981', borderWidth: 2.5, pointRadius: 5, pointBackgroundColor: '#10B981', pointBorderColor: '#fff', pointBorderWidth: 2, fill: false, tension: 0.35 },
-          { label: '디즈니', data: brandData['디즈니'].achieve, borderColor: '#8B5CF6', borderWidth: 2.5, pointRadius: 5, pointBackgroundColor: '#8B5CF6', pointBorderColor: '#fff', pointBorderWidth: 2, fill: false, tension: 0.35 }
+          { label: '아가방', data: brandData['아가방'].achieve, borderColor: '#3B82F6', borderWidth: 2.5, pointRadius: 5, pointBackgroundColor: '#3B82F6', pointBorderColor: '#fff', pointBorderWidth: 2, fill: false, tension: 0.35, datalabels: { ...lineLabelOpts, color: '#3B82F6' } },
+          { label: '에뜨와', data: brandData['에뜨와'].achieve, borderColor: '#10B981', borderWidth: 2.5, pointRadius: 5, pointBackgroundColor: '#10B981', pointBorderColor: '#fff', pointBorderWidth: 2, fill: false, tension: 0.35, datalabels: { ...lineLabelOpts, color: '#059669', align: 'bottom', anchor: 'start' } },
+          { label: '디즈니', data: brandData['디즈니'].achieve, borderColor: '#8B5CF6', borderWidth: 2.5, pointRadius: 5, pointBackgroundColor: '#8B5CF6', pointBorderColor: '#fff', pointBorderWidth: 2, fill: false, tension: 0.35, datalabels: { ...lineLabelOpts, color: '#7C3AED' } }
         ]
       },
       options: {
@@ -517,12 +577,13 @@
       options: {
         responsive: true, maintainAspectRatio: false,
         animation: { duration: 800 },
-        plugins: { legend: { display: false }, tooltip: { ...tooltipCfg(), callbacks: { label: ctx => ' ' + ctx.dataset.label + ': ' + ctx.parsed.y + '억' } } },
+        plugins: { legend: { display: false }, datalabels: { display: false }, tooltip: { ...tooltipCfg(), callbacks: { label: ctx => ' ' + ctx.dataset.label + ': ' + ctx.parsed.y + '억' } } },
         scales: {
           x: { stacked: true, grid: { display: false }, border: { display: false }, ticks: { font: { family: fontFamily, size: 10 }, color: '#94A3B8' } },
           y: { stacked: true, grid: { color: gridColor }, border: { display: false }, ticks: { font: { family: fontFamily, size: 10 }, color: '#CBD5E1', callback: v => v + '억' } }
         }
-      }
+      },
+      plugins: [stackTotalLabelPlugin]
     });
   </script>
 </body>
