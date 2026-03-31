@@ -197,11 +197,87 @@
       </div>
     </div>
 
+    <!-- Brand Section -->
+    <div style="margin-top:28px; margin-bottom:16px; padding-left:4px;">
+      <div style="font-size:18px; font-weight:700; color:#0F172A; letter-spacing:-0.3px;">브랜드별 매출 현황</div>
+      <div style="font-size:12px; color:#94A3B8; margin-top:3px;">브랜드별 실매출 vs 목표 | 오프라인+온라인 합산 (억원)</div>
+    </div>
+
+    <!-- Brand KPI Cards -->
+    <div class="kpi-row" style="grid-template-columns: repeat(3, 1fr);">
+      <div class="kpi-card" style="border-left: 3px solid #3B82F6">
+        <div class="kpi-label"><span class="kpi-icon">🏪</span> 아가방</div>
+        <div class="kpi-value" style="font-size:22px;">248.8<span class="kpi-unit">억</span></div>
+        <div class="kpi-desc">
+          달성율 <span class="kpi-badge badge-blue">86.4%</span>
+          성장율 <span class="kpi-badge badge-green">+4.3%</span>
+        </div>
+      </div>
+      <div class="kpi-card" style="border-left: 3px solid #10B981">
+        <div class="kpi-label"><span class="kpi-icon">👗</span> 에뜨와</div>
+        <div class="kpi-value" style="font-size:22px;">199.9<span class="kpi-unit">억</span></div>
+        <div class="kpi-desc">
+          달성율 <span class="kpi-badge badge-green">116.8%</span>
+          성장율 <span class="kpi-badge badge-green">+23.0%</span>
+        </div>
+      </div>
+      <div class="kpi-card" style="border-left: 3px solid #8B5CF6">
+        <div class="kpi-label"><span class="kpi-icon">🏰</span> 디즈니</div>
+        <div class="kpi-value" style="font-size:22px;">42.6<span class="kpi-unit">억</span></div>
+        <div class="kpi-desc">
+          달성율 <span class="kpi-badge badge-blue">84.4%</span>
+          성장율 <span class="kpi-badge badge-red">-12.7%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Brand Charts -->
+    <div class="chart-grid">
+      <div class="chart-card">
+        <div class="chart-card-title">브랜드별 월별 매출</div>
+        <div class="chart-card-sub">실매출 합계 (억원)</div>
+        <div class="chart-wrap"><canvas id="chartBrandSales"></canvas></div>
+        <div class="chart-legend">
+          <div class="legend-i"><div class="legend-dot" style="background:#3B82F6"></div>아가방</div>
+          <div class="legend-i"><div class="legend-dot" style="background:#10B981"></div>에뜨와</div>
+          <div class="legend-i"><div class="legend-dot" style="background:#8B5CF6"></div>디즈니</div>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-title">브랜드별 달성율 추이</div>
+        <div class="chart-card-sub">목표 대비 달성율 (%)</div>
+        <div class="chart-wrap"><canvas id="chartBrandAchieve"></canvas></div>
+        <div class="chart-legend">
+          <div class="legend-i"><div class="legend-line" style="background:#3B82F6"></div>아가방</div>
+          <div class="legend-i"><div class="legend-line" style="background:#10B981"></div>에뜨와</div>
+          <div class="legend-i"><div class="legend-line" style="background:#8B5CF6"></div>디즈니</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-grid">
+      <div class="chart-card full">
+        <div class="chart-card-title">브랜드별 매출 비중</div>
+        <div class="chart-card-sub">오프라인 / 온라인 채널 분리</div>
+        <div class="chart-wrap"><canvas id="chartBrandStack"></canvas></div>
+        <div class="chart-legend">
+          <div class="legend-i"><div class="legend-dot" style="background:#3B82F6"></div>아가방 오프</div>
+          <div class="legend-i"><div class="legend-dot" style="background:rgba(59,130,246,0.4)"></div>아가방 온</div>
+          <div class="legend-i"><div class="legend-dot" style="background:#10B981"></div>에뜨와 오프</div>
+          <div class="legend-i"><div class="legend-dot" style="background:rgba(16,185,129,0.4)"></div>에뜨와 온</div>
+          <div class="legend-i"><div class="legend-dot" style="background:#8B5CF6"></div>디즈니 오프</div>
+          <div class="legend-i"><div class="legend-dot" style="background:rgba(139,92,246,0.4)"></div>디즈니 온</div>
+        </div>
+      </div>
+    </div>
+
     <div class="updated">데이터 출처: Notion 온오프 목표대비 실적 DB | 갱신일: 2026-03-31</div>
   </div>
 
   <script>
     const labels = ["1월","2월","3월"];
+    // Brand data
+    const brandData = {"아가방":{"labels":["1월","2월","3월"],"sales":[74,86.8,88],"achieve":[87.2,84.3,87.7],"offSales":[66.6,80,75.5],"onSales":[7.4,6.8,12.5]},"에뜨와":{"labels":["1월","2월","3월"],"sales":[77.7,59,63.2],"achieve":[120.5,120.9,109.3],"offSales":[73.1,52.3,52.6],"onSales":[4.6,6.7,10.6]},"디즈니":{"labels":["1월","2월","3월"],"sales":[12.4,15.1,15.1],"achieve":[79,84.2,89.7],"offSales":[10.6,13.6,12.3],"onSales":[1.9,1.6,2.8]}};
     const offSales = [150.3,145.8,140.4];
     const offTarget = [136.4,137.3,142.9];
     const onSales = [13.9,15.1,25.9];
@@ -373,6 +449,78 @@
         scales: {
           x: { grid: { display: false }, border: { display: false }, ticks: { font: { family: fontFamily, size: 10 }, color: '#94A3B8' } },
           y: { grid: { color: gridColor }, border: { display: false }, ticks: { font: { family: fontFamily, size: 10 }, color: '#CBD5E1', callback: v => v + '억' } }
+        }
+      }
+    });
+    // 브랜드별 월별 매출 (그룹 바 차트)
+    new Chart(document.getElementById('chartBrandSales'), {
+      type: 'bar',
+      data: {
+        labels: brandData['아가방'].labels,
+        datasets: [
+          { label: '아가방', data: brandData['아가방'].sales, backgroundColor: '#3B82F6', borderRadius: 5, barPercentage: 0.7, categoryPercentage: 0.75 },
+          { label: '에뜨와', data: brandData['에뜨와'].sales, backgroundColor: '#10B981', borderRadius: 5, barPercentage: 0.7, categoryPercentage: 0.75 },
+          { label: '디즈니', data: brandData['디즈니'].sales, backgroundColor: '#8B5CF6', borderRadius: 5, barPercentage: 0.7, categoryPercentage: 0.75 }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        animation: { duration: 800 },
+        plugins: { legend: { display: false }, tooltip: { ...tooltipCfg(), callbacks: { label: ctx => ' ' + ctx.dataset.label + ': ' + ctx.parsed.y + '억' } } },
+        scales: {
+          x: { grid: { display: false }, border: { display: false }, ticks: { font: { family: fontFamily, size: 10 }, color: '#94A3B8' } },
+          y: { grid: { color: gridColor }, border: { display: false }, ticks: { font: { family: fontFamily, size: 10 }, color: '#CBD5E1', callback: v => v + '억' } }
+        }
+      }
+    });
+
+    // 브랜드별 달성율 (라인 차트)
+    new Chart(document.getElementById('chartBrandAchieve'), {
+      type: 'line',
+      data: {
+        labels: brandData['아가방'].labels,
+        datasets: [
+          { label: '아가방', data: brandData['아가방'].achieve, borderColor: '#3B82F6', borderWidth: 2.5, pointRadius: 5, pointBackgroundColor: '#3B82F6', pointBorderColor: '#fff', pointBorderWidth: 2, fill: false, tension: 0.35 },
+          { label: '에뜨와', data: brandData['에뜨와'].achieve, borderColor: '#10B981', borderWidth: 2.5, pointRadius: 5, pointBackgroundColor: '#10B981', pointBorderColor: '#fff', pointBorderWidth: 2, fill: false, tension: 0.35 },
+          { label: '디즈니', data: brandData['디즈니'].achieve, borderColor: '#8B5CF6', borderWidth: 2.5, pointRadius: 5, pointBackgroundColor: '#8B5CF6', pointBorderColor: '#fff', pointBorderWidth: 2, fill: false, tension: 0.35 }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        animation: { duration: 800 },
+        plugins: {
+          legend: { display: false },
+          tooltip: { ...tooltipCfg(), callbacks: { label: ctx => ' ' + ctx.dataset.label + ': ' + ctx.parsed.y + '%' } },
+          annotation: { annotations: { line100: { type: 'line', yMin: 100, yMax: 100, borderColor: 'rgba(239,68,68,0.4)', borderWidth: 1.5, borderDash: [5,3] } } }
+        },
+        scales: {
+          x: { grid: { display: false }, border: { display: false }, ticks: { font: { family: fontFamily, size: 10 }, color: '#94A3B8' } },
+          y: { grid: { color: gridColor }, border: { display: false }, ticks: { font: { family: fontFamily, size: 10 }, color: '#CBD5E1', callback: v => v + '%' } }
+        }
+      }
+    });
+
+    // 브랜드별 스택 바 (오프/온 분리)
+    new Chart(document.getElementById('chartBrandStack'), {
+      type: 'bar',
+      data: {
+        labels: brandData['아가방'].labels,
+        datasets: [
+          { label: '아가방 오프', data: brandData['아가방'].offSales, backgroundColor: '#3B82F6', stack: 'ag', borderRadius: 4, barPercentage: 0.65, categoryPercentage: 0.75 },
+          { label: '아가방 온', data: brandData['아가방'].onSales, backgroundColor: 'rgba(59,130,246,0.4)', stack: 'ag', borderRadius: 4, barPercentage: 0.65, categoryPercentage: 0.75 },
+          { label: '에뜨와 오프', data: brandData['에뜨와'].offSales, backgroundColor: '#10B981', stack: 'et', borderRadius: 4, barPercentage: 0.65, categoryPercentage: 0.75 },
+          { label: '에뜨와 온', data: brandData['에뜨와'].onSales, backgroundColor: 'rgba(16,185,129,0.4)', stack: 'et', borderRadius: 4, barPercentage: 0.65, categoryPercentage: 0.75 },
+          { label: '디즈니 오프', data: brandData['디즈니'].offSales, backgroundColor: '#8B5CF6', stack: 'dn', borderRadius: 4, barPercentage: 0.65, categoryPercentage: 0.75 },
+          { label: '디즈니 온', data: brandData['디즈니'].onSales, backgroundColor: 'rgba(139,92,246,0.4)', stack: 'dn', borderRadius: 4, barPercentage: 0.65, categoryPercentage: 0.75 }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        animation: { duration: 800 },
+        plugins: { legend: { display: false }, tooltip: { ...tooltipCfg(), callbacks: { label: ctx => ' ' + ctx.dataset.label + ': ' + ctx.parsed.y + '억' } } },
+        scales: {
+          x: { stacked: true, grid: { display: false }, border: { display: false }, ticks: { font: { family: fontFamily, size: 10 }, color: '#94A3B8' } },
+          y: { stacked: true, grid: { color: gridColor }, border: { display: false }, ticks: { font: { family: fontFamily, size: 10 }, color: '#CBD5E1', callback: v => v + '억' } }
         }
       }
     });
