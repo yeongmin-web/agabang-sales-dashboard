@@ -52,6 +52,7 @@
     .legend-line-dashed {
       width: 22px; height: 0; border-top: 2px dashed #EF4444;
     }
+    .updated { font-size: 11px; color: #CBD5E1; text-align: right; margin-top: 12px; }
   </style>
 </head>
 <body>
@@ -60,7 +61,7 @@
       <div class="title">사업부별 사업계획 대비 달성율</div>
       <div class="subtitle">
         <span>사업계획 vs 실적 매출액 &nbsp;|&nbsp; 단위: 백만원</span>
-        <span class="tag tag-green">전사 달성율 101.3%</span>
+        <span class="tag tag-red">전사 달성율 96.4%</span>
       </div>
     </div>
     <div class="chart-area"><canvas id="chart"></canvas></div>
@@ -71,16 +72,17 @@
       <div class="legend-item"><div class="legend-bar" style="background:#10B981"></div>실적 영업이익</div>
       <div class="legend-item"><div class="legend-line-dashed"></div>100% 기준선</div>
     </div>
+    <div class="updated">데이터 출처: Notion 월별 매출 현황(DB) | 갱신일: 2026-03-31</div>
   </div>
   <script>
     const ctx = document.getElementById('chart').getContext('2d');
-    const labels = ['갤러리', '에뜨와', '디즈니', '온라인', '임대', '화장품'];
-    const planSales = [15619, 10295, 2953, 3640, 660, 365];
-    const actualSales = [14456, 12415, 2504, 1567, 622, 128];
-    const planProfit = [1579, 1351, -132, 206, 412, 75];
-    const actualProfit = [1282, 1224, 84, -212, 446, 47];
-    const rates = ['92.6%', '120.6%', '84.8%', '43.1%', '94.2%', '35.1%'];
-    const diffs = ['-1,162', '+2,119', '-449', '-2,073', '-38', '-237'];
+    const labels = ["갤러리사업부","에뜨와사업부","디즈니사업부"];
+    const planSales = [28805,17112,5051];
+    const actualSales = [24879,19994,4262];
+    const planProfit = [1579,1351,-132];
+    const actualProfit = [1282,1224,84];
+    const rates = ["86.4%","116.8%","84.4%"];
+    const diffs = ["-3,926","+2,882","-788"];
 
     new Chart(ctx, {
       type: 'bar',
@@ -165,12 +167,11 @@
             usePointStyle: true,
             callbacks: {
               title: function(items) {
-                const idx = items[0].dataIndex;
-                return items[0].label + ' 사업부';
+                return items[0].label;
               },
               label: function(ctx) {
                 const v = ctx.parsed.y ?? ctx.parsed;
-                return ` ${ctx.dataset.label}: ${v.toLocaleString()} 백만원`;
+                return ' ' + ctx.dataset.label + ': ' + v.toLocaleString() + ' 백만원';
               },
               footer: function(items) {
                 const idx = items[0].dataIndex;

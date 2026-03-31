@@ -38,6 +38,7 @@
     }
     .tag-up { background: #ECFDF5; color: #059669; }
     .tag-profit { background: #EFF6FF; color: #2563EB; }
+    .tag-down { background: #FEF2F2; color: #DC2626; }
     .chart-area { position: relative; height: 440px; }
     .legend-custom {
       display: flex; justify-content: center; gap: 24px;
@@ -50,6 +51,7 @@
     .legend-bar { width: 14px; height: 10px; border-radius: 3px; }
     .legend-line { width: 20px; height: 3px; border-radius: 2px; }
     .legend-line.dashed { background: repeating-linear-gradient(90deg, currentColor 0 6px, transparent 6px 10px); height: 2px; }
+    .updated { font-size: 11px; color: #CBD5E1; text-align: right; margin-top: 12px; }
   </style>
 </head>
 <body>
@@ -58,8 +60,8 @@
       <div class="title">사업부별 전년 대비 실적</div>
       <div class="subtitle">
         <span>막대: 매출액 &nbsp;|&nbsp; 선: 영업이익 &nbsp;|&nbsp; 단위: 백만원</span>
-        <span class="tag tag-up">매출 +12.8%</span>
-        <span class="tag tag-profit">영업이익 +815</span>
+        <span class="tag tag-up">매출 +9.2%</span>
+        <span class="tag tag-profit">영업이익 +753</span>
       </div>
     </div>
     <div class="chart-area"><canvas id="chart"></canvas></div>
@@ -69,11 +71,12 @@
       <div class="legend-item"><div class="legend-line dashed" style="color:#FBBF24"></div>2025 영업이익</div>
       <div class="legend-item"><div class="legend-line" style="background:#10B981"></div>2026 영업이익</div>
     </div>
+    <div class="updated">데이터 출처: Notion 월별 매출 현황(DB) | 갱신일: 2026-03-31</div>
   </div>
   <script>
     const ctx = document.getElementById('chart').getContext('2d');
-    const labels = ['갤러리', '에뜨와', '디즈니', '온라인', '임대', '화장품'];
-    const changes = ['+6.2%', '+27.5%', '-1.0%', '-18.2%', '-7.0%', '-35.2%'];
+    const labels = ["갤러리사업부","에뜨와사업부","디즈니사업부"];
+    const changes = ["+4.3%","+23.0%","-12.7%"];
 
     new Chart(ctx, {
       type: 'bar',
@@ -82,7 +85,7 @@
         datasets: [
           {
             label: '2025 매출액',
-            data: [13607, 9733, 2528, 1915, 668, 197],
+            data: [23854,16259,4884],
             backgroundColor: '#E2E8F0',
             hoverBackgroundColor: '#CBD5E1',
             borderRadius: 6,
@@ -93,7 +96,7 @@
           },
           {
             label: '2026 매출액',
-            data: [14456, 12415, 2504, 1567, 622, 128],
+            data: [24879,19994,4262],
             backgroundColor: '#6366F1',
             hoverBackgroundColor: '#4F46E5',
             borderRadius: 6,
@@ -105,7 +108,7 @@
           {
             label: '2025 영업이익',
             type: 'line',
-            data: [1354, 733, -250, -133, 420, 11],
+            data: [1354,733,-250],
             borderColor: '#FBBF24',
             borderWidth: 2.5,
             borderDash: [7, 4],
@@ -114,7 +117,6 @@
             pointBackgroundColor: '#FBBF24',
             pointBorderColor: '#fff',
             pointBorderWidth: 2.5,
-            pointHoverBorderWidth: 3,
             fill: false,
             tension: 0.35,
             order: 1,
@@ -123,7 +125,7 @@
           {
             label: '2026 영업이익',
             type: 'line',
-            data: [1282, 1224, 84, -212, 446, 47],
+            data: [1282,1224,84],
             borderColor: '#10B981',
             borderWidth: 3,
             pointRadius: 6,
@@ -131,7 +133,6 @@
             pointBackgroundColor: '#10B981',
             pointBorderColor: '#fff',
             pointBorderWidth: 2.5,
-            pointHoverBorderWidth: 3,
             fill: false,
             tension: 0.35,
             order: 1,
@@ -157,12 +158,11 @@
             callbacks: {
               title: function(items) {
                 const idx = items[0].dataIndex;
-                return items[0].label + ' 사업부  ' + changes[idx];
+                return items[0].label + '  ' + changes[idx];
               },
               label: function(ctx) {
                 const v = ctx.parsed.y ?? ctx.parsed;
-                const sign = v >= 0 ? '' : '';
-                return ` ${ctx.dataset.label}: ${sign}${v.toLocaleString()} 백만원`;
+                return ' ' + ctx.dataset.label + ': ' + v.toLocaleString() + ' 백만원';
               }
             }
           }
