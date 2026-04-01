@@ -20,6 +20,7 @@
       max-width: 960px;
       margin: 0 auto;
       width: 100%;
+      overflow-x: hidden;
     }
     .dash-header {
       text-align: center;
@@ -35,7 +36,7 @@
     /* KPI Cards */
     .kpi-row {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
       gap: 12px;
       margin-bottom: 20px;
     }
@@ -70,7 +71,7 @@
     /* Chart Cards */
     .chart-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 16px;
       margin-bottom: 16px;
     }
@@ -88,7 +89,8 @@
     .chart-card-sub {
       font-size: 11px; color: #94A3B8; margin-bottom: 14px;
     }
-    .chart-wrap { position: relative; height: 260px; }
+    .chart-card { min-width: 0; overflow: hidden; }
+    .chart-wrap { position: relative; height: 260px; overflow: hidden; }
     .chart-wrap.tall { height: 320px; }
     .chart-legend {
       display: flex; justify-content: center; gap: 16px;
@@ -105,12 +107,12 @@
       font-size: 11px; color: #CBD5E1; margin-top: 16px;
     }
     .brand-kpi { grid-template-columns: repeat(3, 1fr); }
-    @media (max-width: 768px) {
+    @media (max-width: 560px) {
       body { padding: 12px 8px; }
       .dash-title { font-size: 20px; }
       .dash-sub { font-size: 12px; }
       .kpi-row { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-      .brand-kpi { grid-template-columns: repeat(2, 1fr); }
+      .brand-kpi { grid-template-columns: repeat(3, 1fr); }
       .kpi-value { font-size: 20px; }
       .kpi-card { padding: 14px 16px; }
       .chart-grid { grid-template-columns: 1fr; }
@@ -118,7 +120,7 @@
       .chart-wrap { height: 220px; }
       .chart-legend { gap: 10px; }
     }
-    @media (max-width: 480px) {
+    @media (max-width: 400px) {
       .kpi-row { grid-template-columns: 1fr; }
       .brand-kpi { grid-template-columns: 1fr; }
       .kpi-value { font-size: 18px; }
