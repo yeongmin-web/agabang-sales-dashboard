@@ -15,14 +15,15 @@
       min-height: 100vh;
       font-family: 'Noto Sans KR', -apple-system, sans-serif;
       -webkit-font-smoothing: antialiased;
+      padding: 12px;
     }
     .card {
       background: #fff;
       border-radius: 20px;
       padding: 36px 40px 28px;
       box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.06);
-      width: 920px;
-      max-width: 96vw;
+      width: 100%;
+      max-width: 920px;
     }
     .header { margin-bottom: 28px; }
     .title {
@@ -32,6 +33,7 @@
     .subtitle {
       font-size: 13px; font-weight: 400; color: #94A3B8;
       margin-top: 6px; display: flex; gap: 12px; align-items: center;
+      flex-wrap: wrap;
     }
     .tag {
       display: inline-flex; align-items: center; gap: 4px;
@@ -53,6 +55,14 @@
       width: 22px; height: 0; border-top: 2px dashed #EF4444;
     }
     .updated { font-size: 11px; color: #CBD5E1; text-align: right; margin-top: 12px; }
+    @media (max-width: 640px) {
+      .card { padding: 20px 16px 16px; border-radius: 12px; }
+      .title { font-size: 18px; }
+      .subtitle { font-size: 12px; gap: 8px; }
+      .chart-area { height: 320px; }
+      .legend-custom { gap: 12px; }
+      .legend-item { font-size: 11px; }
+    }
   </style>
 </head>
 <body>

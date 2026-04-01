@@ -19,6 +19,7 @@
     .dashboard {
       max-width: 960px;
       margin: 0 auto;
+      width: 100%;
     }
     .dash-header {
       text-align: center;
@@ -91,7 +92,7 @@
     .chart-wrap.tall { height: 320px; }
     .chart-legend {
       display: flex; justify-content: center; gap: 16px;
-      margin-top: 10px;
+      margin-top: 10px; flex-wrap: wrap;
     }
     .legend-i {
       display: flex; align-items: center; gap: 5px;
@@ -102,6 +103,27 @@
     .updated {
       text-align: center;
       font-size: 11px; color: #CBD5E1; margin-top: 16px;
+    }
+    .brand-kpi { grid-template-columns: repeat(3, 1fr); }
+    @media (max-width: 768px) {
+      body { padding: 12px 8px; }
+      .dash-title { font-size: 20px; }
+      .dash-sub { font-size: 12px; }
+      .kpi-row { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+      .brand-kpi { grid-template-columns: repeat(2, 1fr); }
+      .kpi-value { font-size: 20px; }
+      .kpi-card { padding: 14px 16px; }
+      .chart-grid { grid-template-columns: 1fr; }
+      .chart-card { padding: 16px 16px 12px; border-radius: 12px; }
+      .chart-wrap { height: 220px; }
+      .chart-legend { gap: 10px; }
+    }
+    @media (max-width: 480px) {
+      .kpi-row { grid-template-columns: 1fr; }
+      .brand-kpi { grid-template-columns: 1fr; }
+      .kpi-value { font-size: 18px; }
+      .chart-wrap { height: 200px; }
+      .dash-title { font-size: 18px; }
     }
   </style>
 </head>
@@ -205,7 +227,7 @@
     </div>
 
     <!-- Brand KPI Cards -->
-    <div class="kpi-row" style="grid-template-columns: repeat(3, 1fr);">
+    <div class="kpi-row brand-kpi">
       <div class="kpi-card" style="border-left: 3px solid #3B82F6">
         <div class="kpi-label"><span class="kpi-icon">🏪</span> 아가방</div>
         <div class="kpi-value" style="font-size:22px;">251.6<span class="kpi-unit">억</span></div>
