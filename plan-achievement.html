@@ -71,7 +71,7 @@
       <div class="title">사업부별 사업계획 대비 달성율</div>
       <div class="subtitle">
         <span>사업계획 vs 실적 매출액 &nbsp;|&nbsp; 단위: 백만원</span>
-        <span class="tag tag-red">전사 달성율 96.5%</span>
+        <span class="tag tag-red">전사 달성율 96.8%</span>
       </div>
     </div>
     <div class="chart-area"><canvas id="chart"></canvas></div>
@@ -87,12 +87,12 @@
   <script>
     const ctx = document.getElementById('chart').getContext('2d');
     const labels = ["갤러리사업부","에뜨와사업부","디즈니사업부"];
-    const planSales = [29142,17263,5117];
-    const actualSales = [25164,20225,4314];
+    const planSales = [29384,17411,5152];
+    const actualSales = [25476,20435,4374];
     const planProfit = [1579,1351,-132];
     const actualProfit = [1282,1224,84];
-    const rates = ["86.3%","117.2%","84.3%"];
-    const diffs = ["-3,979","+2,962","-803"];
+    const rates = ["86.7%","117.4%","84.9%"];
+    const diffs = ["-3,908","+3,023","-779"];
 
     new Chart(ctx, {
       type: 'bar',
