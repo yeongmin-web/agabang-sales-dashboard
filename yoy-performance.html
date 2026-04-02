@@ -70,7 +70,7 @@
       <div class="title">사업부별 전년 대비 실적</div>
       <div class="subtitle">
         <span>막대: 매출액 &nbsp;|&nbsp; 선: 영업이익 &nbsp;|&nbsp; 단위: 백만원</span>
-        <span class="tag tag-up">매출 +9.8%</span>
+        <span class="tag tag-up">매출 +9.9%</span>
         <span class="tag tag-profit">영업이익 +753</span>
       </div>
     </div>
@@ -81,12 +81,12 @@
       <div class="legend-item"><div class="legend-line dashed" style="color:#FBBF24"></div>2025 영업이익</div>
       <div class="legend-item"><div class="legend-line" style="background:#10B981"></div>2026 영업이익</div>
     </div>
-    <div class="updated">데이터 출처: Notion 월별 매출 현황(DB) | 갱신일: 2026-04-01</div>
+    <div class="updated">데이터 출처: Notion 월별 매출 현황(DB) | 갱신일: 2026-04-02</div>
   </div>
   <script>
     const ctx = document.getElementById('chart').getContext('2d');
     const labels = ["갤러리사업부","에뜨와사업부","디즈니사업부"];
-    const changes = ["+5.1%","+23.4%","-12.4%"];
+    const changes = ["+5.3%","+23.4%","-12.0%"];
 
     new Chart(ctx, {
       type: 'bar',
@@ -95,7 +95,7 @@
         datasets: [
           {
             label: '2025 매출액',
-            data: [24249,16563,4995],
+            data: [24506,16713,5038],
             backgroundColor: '#E2E8F0',
             hoverBackgroundColor: '#CBD5E1',
             borderRadius: 6,
@@ -106,7 +106,7 @@
           },
           {
             label: '2026 매출액',
-            data: [25476,20435,4374],
+            data: [25794,20630,4432],
             backgroundColor: '#6366F1',
             hoverBackgroundColor: '#4F46E5',
             borderRadius: 6,
