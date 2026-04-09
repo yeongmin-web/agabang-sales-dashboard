@@ -81,12 +81,12 @@
       <div class="legend-item"><div class="legend-line dashed" style="color:#FBBF24"></div>2025 영업이익</div>
       <div class="legend-item"><div class="legend-line" style="background:#10B981"></div>2026 영업이익</div>
     </div>
-    <div class="updated">데이터 출처: Notion 월별 매출 현황(DB) | 갱신일: 2026-04-08</div>
+    <div class="updated">데이터 출처: Notion 월별 매출 현황(DB) | 갱신일: 2026-04-09</div>
   </div>
   <script>
     const ctx = document.getElementById('chart').getContext('2d');
     const labels = ["갤러리사업부","에뜨와사업부","디즈니사업부"];
-    const changes = ["+5.7%","+23.1%","-10.9%"];
+    const changes = ["+5.8%","+22.9%","-10.6%"];
 
     new Chart(ctx, {
       type: 'bar',
@@ -95,7 +95,7 @@
         datasets: [
           {
             label: '2025 매출액',
-            data: [26216,17850,5366],
+            data: [26458,18027,5406],
             backgroundColor: '#E2E8F0',
             hoverBackgroundColor: '#CBD5E1',
             borderRadius: 6,
@@ -106,7 +106,7 @@
           },
           {
             label: '2026 매출액',
-            data: [27723,21972,4783],
+            data: [27982,22155,4832],
             backgroundColor: '#6366F1',
             hoverBackgroundColor: '#4F46E5',
             borderRadius: 6,
