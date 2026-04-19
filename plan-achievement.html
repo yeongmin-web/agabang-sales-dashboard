@@ -71,7 +71,7 @@
       <div class="title">사업부별 사업계획 대비 달성율</div>
       <div class="subtitle">
         <span>사업계획 vs 실적 매출액 &nbsp;|&nbsp; 단위: 백만원</span>
-        <span class="tag tag-red">전사 달성율 99.3%</span>
+        <span class="tag tag-red">전사 달성율 99.4%</span>
       </div>
     </div>
     <div class="chart-area"><canvas id="chart"></canvas></div>
@@ -82,17 +82,17 @@
       <div class="legend-item"><div class="legend-bar" style="background:#10B981"></div>실적 영업이익</div>
       <div class="legend-item"><div class="legend-line-dashed"></div>100% 기준선</div>
     </div>
-    <div class="updated">데이터 출처: Notion 월별 매출 현황(DB) | 갱신일: 2026-04-18</div>
+    <div class="updated">데이터 출처: Notion 월별 매출 현황(DB) | 갱신일: 2026-04-19</div>
   </div>
   <script>
     const ctx = document.getElementById('chart').getContext('2d');
     const labels = ["갤러리사업부","에뜨와사업부","디즈니사업부"];
-    const planSales = [34534,20737,5909];
-    const actualSales = [31259,24127,5382];
+    const planSales = [34961,20973,5970];
+    const actualSales = [31680,24396,5468];
     const planProfit = [1579,1351,-132];
     const actualProfit = [1282,1224,84];
-    const rates = ["90.5%","116.3%","91.1%"];
-    const diffs = ["-3,275","+3,390","-527"];
+    const rates = ["90.6%","116.3%","91.6%"];
+    const diffs = ["-3,281","+3,423","-502"];
 
     new Chart(ctx, {
       type: 'bar',
